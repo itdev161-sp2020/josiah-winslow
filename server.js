@@ -211,3 +211,26 @@ app.get("/api/posts/:id", auth, async (req, res) => {
         res.status(500).send("Server error");
     }
 })
+
+app.delete("/api/posts/:id", auth, async (req, res) => {
+    try {
+        const post = await Post.findById(req.params.id);
+
+        // Make sure the post was found
+        if (!post) {
+            return res.status(404).json({ msg: "Post not found" });
+        }
+
+        // Make sure the request user created the post
+        if (post.user.toString() !== req.user.id) {
+            return res.status(401).json({ msg: "User not authorized" });
+        }
+
+        await post.remove();
+
+        res.json({ msg: "Post removed" });
+    } catch (err0r) {
+        console.error(error);
+        res.status(500).send("Server error");
+    }
+});
