@@ -185,7 +185,7 @@ app.post(
     }
 );
 
-app.get("api/posts", auth, async (req, res) => {
+app.get("/api/posts", auth, async (req, res) => {
     try {
         const posts= await Post.find().sort({ date: -1 });
 
