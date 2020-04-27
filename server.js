@@ -195,3 +195,17 @@ app.get("/api/posts", auth, async (req, res) => {
         res.status(500).send("Server error");
     }
 });
+
+app.get("/api/posts/:id", auth, async (req, res) => {
+    try {
+        const post = await Post.findById(req.params.id);
+
+        // Make sure the post was found
+        if (!post) {
+            return res.status(404).json({ msg: "Post not found" });
+        }
+    } catch (error) {
+        console.error(error);
+        res.status(500).send("Server error");
+    }
+})
