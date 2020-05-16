@@ -111,12 +111,12 @@ class App extends React.Component {
                 <React.Fragment>
                   <div>Hello {user}!</div>
                   <div>
-                    {posts.map(post => {
+                    {posts.map(post => (
                       <div key={post._id}>
                         <h1>{post.title}</h1>
                         <p>{post.body}</p>
                       </div>
-                    })}
+                    ))}
                   </div>
                 </React.Fragment>
               ) : (
