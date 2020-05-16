@@ -19,40 +19,40 @@ const EditPost = ({ token, post, onPostUpdated }) => {
             [name]: value
         });
     };
-};
 
-const update = async () => {
-    if (!title || !body) {
-        console.log("Title and body are required");
-    } else {
-        const newPost = {
-            title: title,
-            body: body
-        };
-
-        try {
-            const config = {
-                headers: {
-                    "Content-Type": "application/json",
-                    "x-auth-token": token
-                }
+    const update = async () => {
+        if (!title || !body) {
+            console.log("Title and body are required");
+        } else {
+            const newPost = {
+                title: title,
+                body: body
             };
 
-            // Create the post
-            const body = JSON.stringify(newPost);
-            const res = await axios.put(
-                `http://localhost:5000/api/posts/${post._id}`,
-                body,
-                config
-            );
+            try {
+                const config = {
+                    headers: {
+                        "Content-Type": "application/json",
+                        "x-auth-token": token
+                    }
+                };
 
-            // Call the handler and redirect
-            onPostUpdated(res.data);
-            history.push("/");
-        } catch (error) {
-            console.error(`Error creating post: ${error.response.data}`);
+                // Create the post
+                const body = JSON.stringify(newPost);
+                const res = await axios.put(
+                    `http://localhost:5000/api/posts/${post._id}`,
+                    body,
+                    config
+                );
+
+                // Call the handler and redirect
+                onPostUpdated(res.data);
+                history.push("/");
+            } catch (error) {
+                console.error(`Error creating post: ${error.response.data}`);
+            }
         }
-    }
+    };
 
     return (
         <div className="form-container">

@@ -2,11 +2,12 @@ import React from 'react';
 import './App.css';
 import axios from 'axios';
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
-import "./App.css";
 import Register from "./components/Register/Register";
 import Login from "./components/Login/Login";
 import PostList from "./components/PostList/PostList";
 import Post from "./components/Post/Post";
+import CreatePost from "./components/Post/CreatePost";
+import EditPost from "./components/Post/EditPost";
 
 class App extends React.Component {
   state = {
@@ -14,7 +15,7 @@ class App extends React.Component {
     post: null,
     token: null,
     user: null
-  }
+  };
 
   componentDidMount() {
     this.authenticateUser();
@@ -53,7 +54,7 @@ class App extends React.Component {
           console.error(`Error logging in: ${error}`);
         })
     }
-  }
+  };
 
   loadData = () => {
     const { token } = this.state;
@@ -74,13 +75,13 @@ class App extends React.Component {
         console.error(`Error fetching data: ${error}`);
       });
     }
-  }
+  };
 
   logOut = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
     this.setState({ user: null, token: null });
-  }
+  };
 
   viewPost = post => {
     console.log(`view ${post.title}`);
@@ -110,10 +111,36 @@ class App extends React.Component {
           console.error(`Error deleting post: ${error}`);
         });
     }
-  }
+  };
+
+  editPost = post => {
+    this.setState({
+      post: post
+    });
+  };
+
+  onPostCreated = post => {
+    const newPosts = [...this.state.posts, post];
+
+    this.setState({
+      posts: newPosts
+    });
+  };
+
+  onPostUpdated = post => {
+    console.log("updated post: ", post);
+    const newPosts = [...this.state.posts];
+    const index = newPosts.findIndex(p => p._id === post._id);
+
+    newPosts[index] = post;
+
+    this.setState({
+      posts: newPosts
+    });
+  };
 
   render() {
-    let { user, posts, post } = this.state;
+    let { user, posts, post, token } = this.state;
     const authProps = {
       authenticateUser: this.authenticateUser
     }
@@ -153,6 +180,7 @@ class App extends React.Component {
                       posts={posts}
                       clickPost={this.viewPost}
                       deletePost={this.deletePost}
+                      editPost={this.editPost}
                     />
                   </React.Fragment>
                 ) : (
@@ -161,6 +189,16 @@ class App extends React.Component {
               </Route>
               <Route path="/posts/:postId">
                 <Post post={post} />
+              </Route>
+              <Route path="/new-post">
+                <CreatePost token={token} onPostCreated={this.onPostCreated} />
+              </Route>
+              <Route path="/edit-post/:postId">
+                <EditPost
+                  token={token}
+                  post={post}
+                  onPostUpdated={this.onPostUpdated}
+                />
               </Route>
               <Route
                 exact path="/register"

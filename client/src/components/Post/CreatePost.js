@@ -3,7 +3,7 @@ import axios from "axios";
 import { useHistory } from "react-router-dom";
 import "./styles.css";
 
-const CreatePost = ({ onPostCreated }) => {
+const CreatePost = ({ token, onPostCreated }) => {
     let history = useHistory();
     const [postData, setPostData] = useState({
         title: "",
@@ -19,40 +19,40 @@ const CreatePost = ({ onPostCreated }) => {
             [name]: value
         });
     };
-};
 
-const create = async () => {
-    if (!title || !body) {
-        console.log("Title and body are required");
-    } else {
-        const newPost = {
-            title: title,
-            body: body
-        };
-
-        try {
-            const config = {
-                headers: {
-                    "Content-Type": "application/json",
-                    "x-auth-token": token
-                }
+    const create = async () => {
+        if (!title || !body) {
+            console.log("Title and body are required");
+        } else {
+            const newPost = {
+                title: title,
+                body: body
             };
 
-            // Create the post
-            const body = JSON.stringify(newPost);
-            const res = await axios.post(
-                "http://localhost:5000/api/posts",
-                body,
-                config
-            );
+            try {
+                const config = {
+                    headers: {
+                        "Content-Type": "application/json",
+                        "x-auth-token": token
+                    }
+                };
 
-            // Call the handler and redirect
-            onPostCreated(res.data);
-            history.push("/");
-        } catch (error) {
-            console.error(`Error creating post: ${error.repsponse.data}`);
+                // Create the post
+                const body = JSON.stringify(newPost);
+                const res = await axios.post(
+                    "http://localhost:5000/api/posts",
+                    body,
+                    config
+                );
+
+                // Call the handler and redirect
+                onPostCreated(res.data);
+                history.push("/");
+            } catch (error) {
+                console.error(`Error creating post: ${error.repsponse.data}`);
+            }
         }
-    }
+    };
 
     return (
         <div className="form-container">
